@@ -1,0 +1,200 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "c8b14fc7-2cc8-415f-b819-2f2f96d26d38",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "d1f8b57a-89d0-4cba-9041-a7522d7fb2ad",
+      "name": "Webhook",
+      "webhookId": "c8b14fc7-2cc8-415f-b819-2f2f96d26d38"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  const body = item.json.body || {};\n  \n  // Sanitize and normalize lead data\n  item.json.lead = {\n    fullName: (body.name || \"Anonymous Lead\").trim(),\n    email: (body.email || \"no-emailProvided@client.com\").toLowerCase().trim(),\n    message: (body.message || \"No message provided.\").trim(),\n    receivedAt: new Date().toISOString()\n  };\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        176,
+        0
+      ],
+      "id": "7ce60ba5-3990-4b62-ae88-29dd84f31987",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appAGg9CdsHJ23TyD",
+          "mode": "list",
+          "cachedResultName": "Lead Capture CRM",
+          "cachedResultUrl": "https://airtable.com/appAGg9CdsHJ23TyD"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl8M10s189g0Brr6",
+          "mode": "list",
+          "cachedResultName": "Table 1",
+          "cachedResultUrl": "https://airtable.com/appAGg9CdsHJ23TyD/tbl8M10s189g0Brr6"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "Done",
+            "message": "={{ $json.lead.message }}",
+            "FullName": "={{ $json.lead.fullName }}",
+            "Email": "={{ $json.lead.email }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "FullName",
+              "displayName": "FullName",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Assignee",
+              "displayName": "Assignee",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Todo",
+                  "value": "Todo"
+                },
+                {
+                  "name": "In progress",
+                  "value": "In progress"
+                },
+                {
+                  "name": "Done",
+                  "value": "Done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Attachment Summary",
+              "displayName": "Attachment Summary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        400,
+        0
+      ],
+      "id": "06fd443a-39ec-4997-92e7-450e36fc27f0",
+      "name": "Create a record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "ypTOJMy8RBTfrBb3",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Create a record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "4770c28b-330c-416a-a71c-0b59cc88385b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "31cae62eb9b2503494481afc5238ed39f680e555649a203f0caf9ddd0f083013"
+  },
+  "nodeGroups": [],
+  "id": "OcYWAMGDXABhnBDz",
+  "tags": []
+}
